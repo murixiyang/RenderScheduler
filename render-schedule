@@ -1,0 +1,9 @@
+#!/bin/bash
+
+CLASSPATH="lib/*;src"
+
+# Compile
+javac -cp "$CLASSPATH" src/*.java
+
+# Run Main
+java -cp "$CLASSPATH" Main "$@"
