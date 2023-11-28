@@ -30,7 +30,7 @@ public class Main {
         // If not enough arguments
         if (scheduleFile == null || overridesFile == null || fromTime == null || untilTime == null) {
             System.out.println("Missing arguments.");
-            System.out.println("Usage: ./render-schedule --schedule=<fileName.json> " +
+            System.out.println("Usage: ./render-schedule.sh --schedule=<fileName.json> " +
                                                            "--overrides=<fileName.json> " +
                                                            "--from=<yyyy-MM-dd'T'HH:mm:ss'Z'> " +
                                                            "--until=<yyyy-MM-dd'T'HH:mm:ss'Z'>");
