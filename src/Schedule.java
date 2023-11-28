@@ -250,29 +250,38 @@ public class Schedule {
         SingleSchedule startOverrideSchedule = getOneSchedule(overrideStartTime);
         SingleSchedule endOverrideSchedule = getOneSchedule(overrideEndTime);
 
-        // Create left split, from original start to override start
-        SingleSchedule leftSplit = new SingleSchedule(startOverrideSchedule.getUser(), startOverrideSchedule.getStartTime(), overrideStartTime);
-        // Create right split, from override end to original end
-        SingleSchedule rightSplit = new SingleSchedule(endOverrideSchedule.getUser(), overrideEndTime, endOverrideSchedule.getEndTime());
+        // Split if not exactly override the handover time
+        boolean splitBefore = !startOverrideSchedule.getStartTime().equals(overrideStartTime);
+        boolean splitAfter = !overrideEndTime.equals(endOverrideSchedule.getEndTime());
 
         // Generate return ArrayList
         ArrayList<SingleSchedule> splitSchedules = new ArrayList<>();
-        splitSchedules.add(leftSplit);
+        if (splitBefore) {
+            // Create left split, from original start to override start
+            SingleSchedule leftSplit = new SingleSchedule(startOverrideSchedule.getUser(), startOverrideSchedule.getStartTime(), overrideStartTime);
+            splitSchedules.add(leftSplit);
+        }
+
         splitSchedules.add(overrideSchedule);
-        splitSchedules.add(rightSplit);
+
+        if (splitAfter) {
+            // Create right split, from override end to original end
+            SingleSchedule rightSplit = new SingleSchedule(endOverrideSchedule.getUser(), overrideEndTime, endOverrideSchedule.getEndTime());
+            splitSchedules.add(rightSplit);
+        }
 
         // Find start index in array
-        int startIndex = 0;
+        int startIndex = -1;
         for (int i = 0; i < renderedSchedule.size(); i ++) {
-            if (renderedSchedule.get(i).getStartTime() == startOverrideSchedule.getStartTime()) {
+            if (renderedSchedule.get(i).getStartTime().equals(startOverrideSchedule.getStartTime())) {
                 startIndex = i;
             }
         }
 
         // Find end index in array
-        int endIndex = 0;
+        int endIndex = -1;
         for (int i = startIndex; i < renderedSchedule.size(); i ++) {
-            if (renderedSchedule.get(i).getStartTime() == endOverrideSchedule.getStartTime()) {
+            if (renderedSchedule.get(i).getStartTime().equals(endOverrideSchedule.getStartTime())) {
                 endIndex = i;
             }
         }
