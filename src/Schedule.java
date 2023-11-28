@@ -133,7 +133,7 @@ public class Schedule {
             splitSchedule(override, renderedSchedule);
         }
 
-        // convert into JSONObject
+        // convert into JSONObject Array
         ArrayList<JSONObject> renderedScheduleObj = new ArrayList<>();
         for (SingleSchedule schedule: renderedSchedule) {
             JSONObject scheduleObj = createScheduleObj(schedule.getUser(), schedule.getStartTime(), schedule.getEndTime());
