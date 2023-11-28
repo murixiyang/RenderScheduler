@@ -33,6 +33,9 @@ public class Schedule {
         this.untilTime = untilTime;
     }
 
+    /*
+        Read schedule file and construct regularSchedule
+     */
     public void readSchedule() {
         JSONParser parser = new JSONParser();
         JSONObject schedule = new JSONObject();
@@ -69,6 +72,10 @@ public class Schedule {
         regularSchedule.setHandOverIntervalDays((int) handoverIntervalDays);
     }
 
+
+    /*
+        Read override schedule file and construct overrideSchedule array
+     */
     public void readOverrides() {
         JSONParser parser = new JSONParser();
         JSONArray overrides = new JSONArray();
@@ -98,6 +105,9 @@ public class Schedule {
         }
     }
 
+    /*
+        Return the rendered schedule
+     */
     public ArrayList<JSONObject> createRenderSchedule() {
         ArrayList<SingleSchedule> renderedSchedule = new ArrayList<>();
 
@@ -154,7 +164,9 @@ public class Schedule {
     }
 
 
-    // Calculate the Date that is <days> after <startDate>
+    /*
+        Calculate the Date that is <days> after <startDate>
+     */
     private Date daysAfter(Date startDate, int days) {
         Calendar c = Calendar.getInstance();
         c.setTime(startDate);
@@ -163,6 +175,9 @@ public class Schedule {
         return c.getTime();
     }
 
+    /*
+        Return SingleSchedule of the first schedule at fromTime
+     */
     private SingleSchedule calculateFirstSchedule() {
         Date handOverStartTime = regularSchedule.getHandOverStart();
         int interval = regularSchedule.getHandOverIntervalDays();
@@ -189,8 +204,10 @@ public class Schedule {
         return new SingleSchedule(userName, fromTime, endTime);
     }
 
-    // Return the SingleSchedule happens at <getTime>
-    // getTime should be later than handOverStartTime
+    /*
+         Return the SingleSchedule happens at <getTime>
+         getTime should be later than/equal to handOverStartTime
+     */
     private SingleSchedule getOneSchedule(Date getTime) {
         Date handOverStartTime = regularSchedule.getHandOverStart();
         int interval = regularSchedule.getHandOverIntervalDays();
@@ -210,8 +227,9 @@ public class Schedule {
         return new SingleSchedule(userName, startTime, endTime);
     }
 
-    // Date1 should be later than Date 2
+    // Date1 should be later than/equal to Date 2
     private long calculateDaysDiff(Date date1, Date date2) {
+        assert (!date2.before(date1));
         long milliSecDiff = date1.getTime() - date2.getTime();
         return TimeUnit.DAYS.convert(milliSecDiff, TimeUnit.MILLISECONDS);
     }
@@ -221,7 +239,7 @@ public class Schedule {
         <LeftSplit> <Override> <RightSplit>
         e.g. A1 B A2; A1 C B2; A C(overtook B) A B C
 
-        Remove schedules before split, also needs to remove all overtook schedules
+        This function will modify renderedSchedule, add split schedules and remove overtook ones
      */
     private void splitSchedule(SingleSchedule overrideSchedule, ArrayList<SingleSchedule> renderedSchedule) {
         String overrideUser = overrideSchedule.getUser();
